@@ -23,25 +23,25 @@ use App\Models\Quote;
 $router->get('/', function() use ($router) {
 
     /*
-     * Picks a different quote every day 
+     * Picks a different quote every day
      * (for a maximum of 366 quotes)
      *
      *   - $count: the total number of available quotes
      *   - $day: the current day of the year (from 0 to 365)
-     *   - $page: the page to look for to retrieve the 
+     *   - $page: the page to look for to retrieve the
      *            correct record
      */
     $count = Quote::query()->get()->count();
     $day = (int) date('z');
     $page = $day % $count + 1;
 
-    $quotes = Quote::query()->get()->forPage($page, 1)->all();
+    $quotes = Quote::query()->get()->forPage($page, 1)->first();
 
     if (empty($quotes)) {
         throw new \Illuminate\Database\Eloquent\ModelNotFoundException();
     }
 
-    return view('quote', ['quote' => $quotes[1]]);
+    return view('quote', ['quote' => $quotes]);
 });
 
 /**
@@ -52,7 +52,7 @@ $router->get('/{id}', function($id) use ($router) {
     return view('quote', ['quote' => $quote]);
 });
 
-/** 
+/**
  * Testes
 */
 
